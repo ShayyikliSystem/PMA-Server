@@ -8,11 +8,11 @@
 // @Component
 // public class DummyDataInitializer implements CommandLineRunner {
 
-//     @Autowired
-//     private PmaUserService pmaUserService;
-    
-//     @Override
-//     public void run(String... args) throws Exception {
-//         pmaUserService.fetchAndSaveUsers();
-//     }
+// @Autowired
+// private PmaUserService pmaUserService;
+
+// @Override
+// public void run(String... args) throws Exception {
+// pmaUserService.fetchAndSaveUsers();
+// }
 // }

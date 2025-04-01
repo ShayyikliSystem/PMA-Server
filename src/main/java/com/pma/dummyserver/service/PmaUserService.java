@@ -3,7 +3,6 @@ package com.pma.dummyserver.service;
 import java.time.LocalDateTime;
 import java.util.Random;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -16,13 +15,12 @@ import com.pma.dummyserver.repository.PmaUserRepository;
 @Service
 public class PmaUserService {
 
-    @Autowired
     private PmaUserRepository pmaUserRepository;
 
-    @Autowired
     private ClassificationHistoryRepository classificationHistoryRepository;
 
-    private final String BANKING_API_URL = "http://localhost:8081/api/users/summary";
+    private static final String BANKING_API_URL = "http://localhost:8081/api/users/summary";
+    private static final String NOT_FOUND_STATMENET = "not found";
     private final Random random = new Random();
 
     public void fetchAndSaveUsers() {
@@ -70,9 +68,10 @@ public class PmaUserService {
         }
     }
 
-    public Classification getClassificationByCardNumber(String cardNumber) {
-        PmaUser user = pmaUserRepository.findByCardNumber(cardNumber)
-                .orElseThrow(() -> new RuntimeException("User with cardNumber " + cardNumber + " not found"));
+    public Classification getClassificationByShayyikliAccountNumber(Integer shayyikliAccountNumber) {
+        PmaUser user = pmaUserRepository.findByshayyikliAccountNumber(shayyikliAccountNumber)
+                .orElseThrow(() -> new RuntimeException(
+                        "User with shayyikliAccountNumber " + shayyikliAccountNumber + " " + NOT_FOUND_STATMENET));
         return user.getClassification();
     }
 
@@ -83,15 +82,9 @@ public class PmaUserService {
     }
 
     public PmaUser incrementReturnedChecksAndRecalculate(Integer shayyikliAccountNumber) {
-        // PmaUser user = pmaUserRepository.findByCardNumber(cardNumber)
-        // .orElseThrow(() -> new RuntimeException("User with card number " + cardNumber
-        // + " not found"));
-
-        // Find the user by shayyikliAccountNumber
-
         PmaUser user = pmaUserRepository.findByshayyikliAccountNumber(shayyikliAccountNumber)
                 .orElseThrow(() -> new RuntimeException(
-                        "User with Shayyikli account number " + shayyikliAccountNumber + " not found"));
+                        "User with Shayyikli account number " + shayyikliAccountNumber + "" + NOT_FOUND_STATMENET));
 
         int newReturnedChecks = user.getReturnedChecks() + 1;
         Classification oldClassification = user.getClassification();
@@ -100,7 +93,6 @@ public class PmaUserService {
         pmaUserRepository.save(user);
 
         if (!oldClassification.equals(newClassification)) {
-            // Pass the current returnedChecks value to the history
             ClassificationHistory history = new ClassificationHistory(
                     user,
                     LocalDateTime.now(),
@@ -112,16 +104,18 @@ public class PmaUserService {
         return user;
     }
 
-    public PmaUser updateLastReturnedCheckDate(String cardNumber, LocalDateTime newDate) {
-        PmaUser user = pmaUserRepository.findByCardNumber(cardNumber)
-                .orElseThrow(() -> new RuntimeException("User with card number " + cardNumber + " not found"));
+    public PmaUser updateLastReturnedCheckDateByAccountNumber(Integer shayyikliAccountNumber, LocalDateTime newDate) {
+        PmaUser user = pmaUserRepository.findByshayyikliAccountNumber(shayyikliAccountNumber)
+                .orElseThrow(() -> new RuntimeException(
+                        "User with shayyikliAccountNumber " + shayyikliAccountNumber + " " + NOT_FOUND_STATMENET));
         user.setLastReturnedCheckDate(newDate);
         return pmaUserRepository.save(user);
     }
 
     public PmaUser resetReturnedChecksAndClassification(Integer shayyikliAccountNumber) {
         PmaUser user = pmaUserRepository.findByshayyikliAccountNumber(shayyikliAccountNumber)
-                .orElseThrow(() -> new RuntimeException("User with shayyikliAccountNumber" + shayyikliAccountNumber + " not found"));
+                .orElseThrow(() -> new RuntimeException(
+                        "User with shayyikliAccountNumber" + shayyikliAccountNumber + "" + NOT_FOUND_STATMENET));
 
         Classification oldClassification = user.getClassification();
 

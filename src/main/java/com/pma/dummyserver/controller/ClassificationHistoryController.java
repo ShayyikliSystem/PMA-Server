@@ -2,7 +2,6 @@ package com.pma.dummyserver.controller;
 
 import com.pma.dummyserver.model.ClassificationHistory;
 import com.pma.dummyserver.service.ClassificationHistoryService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
@@ -10,11 +9,10 @@ import java.util.List;
 @RequestMapping("/api/pma-users")
 public class ClassificationHistoryController {
 
-    @Autowired
     private ClassificationHistoryService classificationHistoryService;
 
     @GetMapping("/{shayyikliAccountNumber}/classification-history")
     public List<ClassificationHistory> getUserClassificationHistory(@PathVariable Integer shayyikliAccountNumber) {
-        return classificationHistoryService.getHistoryByUserId( shayyikliAccountNumber);
+        return classificationHistoryService.getHistoryByUserId(shayyikliAccountNumber);
     }
 }

@@ -5,7 +5,6 @@ import com.pma.dummyserver.model.PmaUser;
 import com.pma.dummyserver.model.ClassificationHistory;
 import com.pma.dummyserver.repository.PmaUserRepository;
 import com.pma.dummyserver.repository.ClassificationHistoryRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -15,10 +14,8 @@ import java.util.List;
 @Component
 public class ClassificationUpdateScheduler {
 
-    @Autowired
     private PmaUserRepository pmaUserRepository;
 
-    @Autowired
     private ClassificationHistoryRepository classificationHistoryRepository;
 
     @Scheduled(cron = "0 0 0 * * ?")
