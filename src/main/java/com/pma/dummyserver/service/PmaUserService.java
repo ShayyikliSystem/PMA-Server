@@ -25,7 +25,7 @@ public class PmaUserService {
         this.classificationHistoryRepository = classificationHistoryRepository;
     }
 
-    private static final String BANKING_API_URL = "http://localhost:8081/api/users/summary";
+    private static final String BANKING_API_URL = "http://localhost:8081/api/users/summaries";
     private static final String NOT_FOUND_STATMENET = "not found";
     private final Random random = new Random();
 
