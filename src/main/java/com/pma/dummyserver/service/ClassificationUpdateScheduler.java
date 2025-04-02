@@ -18,6 +18,12 @@ public class ClassificationUpdateScheduler {
 
     private ClassificationHistoryRepository classificationHistoryRepository;
 
+    public ClassificationUpdateScheduler(PmaUserRepository pmaUserRepository,
+            ClassificationHistoryRepository classificationHistoryRepository) {
+        this.pmaUserRepository = pmaUserRepository;
+        this.classificationHistoryRepository = classificationHistoryRepository;
+    }
+
     @Scheduled(cron = "0 0 0 * * ?")
     public void updateInactiveUserClassifications() {
         LocalDateTime now = LocalDateTime.now();

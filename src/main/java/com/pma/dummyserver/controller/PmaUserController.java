@@ -26,6 +26,11 @@ public class PmaUserController {
 
     private PmaUserService pmaUserService;
 
+    public PmaUserController(PmaUserRepository pmaUserRepository, PmaUserService pmaUserService) {
+        this.pmaUserRepository = pmaUserRepository;
+        this.pmaUserService = pmaUserService;
+    }
+
     @GetMapping
     public List<PmaUser> getAllPmaUsers() {
         return pmaUserRepository.findAll();

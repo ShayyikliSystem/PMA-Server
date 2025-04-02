@@ -15,6 +15,12 @@ public class ClassificationHistoryService {
 
     private PmaUserRepository pmaUserRepository;
 
+    public ClassificationHistoryService(ClassificationHistoryRepository classificationHistoryRepository,
+            PmaUserRepository pmaUserRepository) {
+        this.classificationHistoryRepository = classificationHistoryRepository;
+        this.pmaUserRepository = pmaUserRepository;
+    }
+
     public List<ClassificationHistory> getHistoryByUserId(Integer shayyikliAccountNumber) {
         PmaUser user = pmaUserRepository.findByshayyikliAccountNumber(shayyikliAccountNumber)
                 .orElseThrow(() -> new RuntimeException(

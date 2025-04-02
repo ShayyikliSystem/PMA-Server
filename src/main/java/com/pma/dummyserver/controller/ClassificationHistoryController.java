@@ -11,6 +11,10 @@ public class ClassificationHistoryController {
 
     private ClassificationHistoryService classificationHistoryService;
 
+    public ClassificationHistoryController(ClassificationHistoryService classificationHistoryService) {
+        this.classificationHistoryService = classificationHistoryService;
+    }
+
     @GetMapping("/{shayyikliAccountNumber}/classification-history")
     public List<ClassificationHistory> getUserClassificationHistory(@PathVariable Integer shayyikliAccountNumber) {
         return classificationHistoryService.getHistoryByUserId(shayyikliAccountNumber);
