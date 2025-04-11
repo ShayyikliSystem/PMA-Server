@@ -7,9 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import com.pma.dummyserver.enums.Classification;
-import com.pma.dummyserver.model.ClassificationHistory;
 import com.pma.dummyserver.model.PmaUser;
-import com.pma.dummyserver.repository.ClassificationHistoryRepository;
 import com.pma.dummyserver.repository.PmaUserRepository;
 
 @Service
@@ -17,12 +15,8 @@ public class PmaUserService {
 
     private PmaUserRepository pmaUserRepository;
 
-    private ClassificationHistoryRepository classificationHistoryRepository;
-
-    public PmaUserService(PmaUserRepository pmaUserRepository,
-            ClassificationHistoryRepository classificationHistoryRepository) {
+    public PmaUserService(PmaUserRepository pmaUserRepository) {
         this.pmaUserRepository = pmaUserRepository;
-        this.classificationHistoryRepository = classificationHistoryRepository;
     }
 
     private static final String BANKING_API_URL = "http://localhost:8081/api/users/summaries";
@@ -91,22 +85,9 @@ public class PmaUserService {
         PmaUser user = pmaUserRepository.findByshayyikliAccountNumber(shayyikliAccountNumber)
                 .orElseThrow(() -> new RuntimeException(
                         "User with Shayyikli account number " + shayyikliAccountNumber + "" + NOT_FOUND_STATMENET));
-
         int newReturnedChecks = user.getReturnedChecks() + 1;
-        Classification oldClassification = user.getClassification();
         user.setReturnedChecks(newReturnedChecks);
-        Classification newClassification = user.getClassification();
         pmaUserRepository.save(user);
-
-        if (!oldClassification.equals(newClassification)) {
-            ClassificationHistory history = new ClassificationHistory(
-                    user,
-                    LocalDateTime.now(),
-                    oldClassification,
-                    newClassification,
-                    user.getReturnedChecks());
-            classificationHistoryRepository.save(history);
-        }
         return user;
     }
 
@@ -122,21 +103,7 @@ public class PmaUserService {
         PmaUser user = pmaUserRepository.findByshayyikliAccountNumber(shayyikliAccountNumber)
                 .orElseThrow(() -> new RuntimeException(
                         "User with shayyikliAccountNumber" + shayyikliAccountNumber + "" + NOT_FOUND_STATMENET));
-
-        Classification oldClassification = user.getClassification();
-
         user.setReturnedChecks(0);
-
-        if (!oldClassification.equals(user.getClassification())) {
-            ClassificationHistory history = new ClassificationHistory(
-                    user,
-                    LocalDateTime.now(),
-                    oldClassification,
-                    user.getClassification(),
-                    user.getReturnedChecks());
-            classificationHistoryRepository.save(history);
-        }
-
         return pmaUserRepository.save(user);
     }
 }

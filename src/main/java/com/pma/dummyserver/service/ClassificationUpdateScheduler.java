@@ -2,9 +2,7 @@ package com.pma.dummyserver.service;
 
 import com.pma.dummyserver.enums.Classification;
 import com.pma.dummyserver.model.PmaUser;
-import com.pma.dummyserver.model.ClassificationHistory;
 import com.pma.dummyserver.repository.PmaUserRepository;
-import com.pma.dummyserver.repository.ClassificationHistoryRepository;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -16,12 +14,8 @@ public class ClassificationUpdateScheduler {
 
     private PmaUserRepository pmaUserRepository;
 
-    private ClassificationHistoryRepository classificationHistoryRepository;
-
-    public ClassificationUpdateScheduler(PmaUserRepository pmaUserRepository,
-            ClassificationHistoryRepository classificationHistoryRepository) {
+    public ClassificationUpdateScheduler(PmaUserRepository pmaUserRepository) {
         this.pmaUserRepository = pmaUserRepository;
-        this.classificationHistoryRepository = classificationHistoryRepository;
     }
 
     @Scheduled(cron = "0 0 0 * * ?")
@@ -40,14 +34,9 @@ public class ClassificationUpdateScheduler {
             } else if (oldClassification == Classification.D) {
                 newClassification = Classification.DO;
             }
-
             if (newClassification != null) {
                 user.setClassification(newClassification);
                 pmaUserRepository.save(user);
-
-                ClassificationHistory history = new ClassificationHistory(
-                        user, now, oldClassification, newClassification, user.getReturnedChecks());
-                classificationHistoryRepository.save(history);
             }
         }
 
@@ -55,30 +44,20 @@ public class ClassificationUpdateScheduler {
         List<PmaUser> coUsers = pmaUserRepository.findByClassificationAndLastReturnedCheckDateBefore(
                 Classification.CO, twoYearsAgo);
         for (PmaUser user : coUsers) {
-            Classification oldClassification = user.getClassification();
             Classification newClassification = Classification.A;
 
             user.setClassification(newClassification);
             pmaUserRepository.save(user);
-
-            ClassificationHistory history = new ClassificationHistory(
-                    user, now, oldClassification, newClassification, user.getReturnedChecks());
-            classificationHistoryRepository.save(history);
         }
 
         LocalDateTime threeYearsAgo = now.minusYears(3);
         List<PmaUser> doUsers = pmaUserRepository.findByClassificationAndLastReturnedCheckDateBefore(
                 Classification.DO, threeYearsAgo);
         for (PmaUser user : doUsers) {
-            Classification oldClassification = user.getClassification();
             Classification newClassification = Classification.A;
 
             user.setClassification(newClassification);
             pmaUserRepository.save(user);
-
-            ClassificationHistory history = new ClassificationHistory(
-                    user, now, oldClassification, newClassification, user.getReturnedChecks());
-            classificationHistoryRepository.save(history);
         }
     }
 }
