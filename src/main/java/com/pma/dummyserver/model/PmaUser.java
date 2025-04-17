@@ -107,9 +107,15 @@ public class PmaUser {
         } else if (returnedChecks >= 1 && returnedChecks <= 5) {
             return Classification.B;
         } else if (returnedChecks >= 6 && returnedChecks <= 15) {
-            return Classification.C;
+            if (returnedChecks <= 12) {
+                return Classification.C;
+            }
+            return Classification.CO;
         } else {
-            return Classification.D;
+            if (returnedChecks <= 25) {
+                return Classification.D;
+            }
+            return Classification.DO;
         }
     }
 
